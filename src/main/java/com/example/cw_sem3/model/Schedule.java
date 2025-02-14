@@ -1,42 +1,18 @@
-package com.example.cw_sem3.model;
+package model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class Schedule {
-    private int id;
-    private String roomNumber;
+    private long id;
+    private String room;
     private String time;
-    private String dayOfWeek;
+    private String weekday;
     private String teacher;
-    private String groupName;
+    private String groupNumber;
 
-    // Конструкторы, геттеры и сеттеры
-    public Schedule() {}
-
-    public Schedule(int id, String roomNumber, String time, String dayOfWeek, String teacher, String groupName) {
-        this.id = id;
-        this.roomNumber = roomNumber;
-        this.time = time;
-        this.dayOfWeek = dayOfWeek;
-        this.teacher = teacher;
-        this.groupName = groupName;
+    public Schedule() {
     }
-
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getRoomNumber() { return roomNumber; }
-    public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
-
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
-
-    public String getDayOfWeek() { return dayOfWeek; }
-    public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = dayOfWeek; }
-
-    public String getTeacher() { return teacher; }
-    public void setTeacher(String teacher) { this.teacher = teacher; }
-
-    public String getGroupName() { return groupName; }
-    public void setGroupName(String groupName) { this.groupName = groupName; }
 }
-
