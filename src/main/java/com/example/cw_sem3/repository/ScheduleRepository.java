@@ -1,55 +1,42 @@
-package com.example.cw_sem3.repository;
+package repository;
 
-import com.example.cw_sem3.model.Schedule;
+import mapper.ScheduleMapper;
+import model.Schedule;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleRepository {
-    private final String jdbcUrl = "jdbc:postgresql://localhost:5432/schedule_db";
-    private final String jdbcUser = "postgres";
-    private final String jdbcPassword = "password";
 
-    public List<Schedule> findAll() {
-        List<Schedule> schedules = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword)) {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule");
-            while (rs.next()) {
-                schedules.add(new Schedule(
-                        rs.getInt("id"),
-                        rs.getString("room_number"),
-                        rs.getString("time"),
-                        rs.getString("day_of_week"),
-                        rs.getString("teacher"),
-                        rs.getString("group_name")
-                ));
+    private ScheduleMapper scheduleMapper = new ScheduleMapper();
+
+    public List<Schedule> getAll(Connection conn) {
+        try(PreparedStatement ps = conn.prepareStatement("SELECT * FROM schedule")) {
+            ResultSet rs = ps.executeQuery();
+            List<Schedule> schedules = new ArrayList<>();
+            while(rs.next()){
+                schedules.add(scheduleMapper.mapRow(rs));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return schedules;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return schedules;
     }
 
-    public Schedule findById(int id) {
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword)) {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM schedule WHERE id = ?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new Schedule(
-                        rs.getInt("id"),
-                        rs.getString("room_number"),
-                        rs.getString("time"),
-                        rs.getString("day_of_week"),
-                        rs.getString("teacher"),
-                        rs.getString("group_name")
-                );
+    public Schedule getById(long id, Connection conn) {
+        try(PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM schedule WHERE schedule_id = ?")) {
+            preparedStatement.setLong(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()) {
+                return scheduleMapper.mapRow(rs);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 }
+
