@@ -1,18 +1,34 @@
-package com.example.cw_sem3.service;
+package service;
 
-import com.example.cw_sem3.model.Schedule;
-import com.example.cw_sem3.repository.ScheduleRepository;
+import db.DataBaseConfig;
+import model.Schedule;
+import repository.ScheduleRepository;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class ScheduleService {
     private final ScheduleRepository repository = new ScheduleRepository();
+    private final DataBaseConfig dataBaseConfig;
 
-    public List<Schedule> getAllSchedules() {
-        return repository.findAll();
+    public ScheduleService(DataBaseConfig dataBaseConfig) {
+        this.dataBaseConfig = dataBaseConfig;
     }
 
-    public Schedule getScheduleById(int id) {
-        return repository.findById(id);
+    public List<Schedule> getAllSchedule() {
+        try (Connection connection = dataBaseConfig.getConnection()) {
+            return repository.getAll(connection);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Schedule getSchedule(long id) {
+        try(Connection connection = dataBaseConfig.getConnection()) {
+            return repository.getById(id, connection);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
